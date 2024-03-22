@@ -1,0 +1,3 @@
+# tcp_proxy -c ./exmaple.yaml -d
+upstream: 1.1.1.1:80
+listen: 0.0.0.0:8081

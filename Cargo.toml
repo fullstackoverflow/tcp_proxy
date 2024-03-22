@@ -1,0 +1,18 @@
+[package]
+name = "tcp_proxy"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-trait="0.1"
+jemallocator = "0.5.4"
+pingora = { version = "0.1", features = [ "lb" ] }
+pingora-core = "0.1.0"
+pingora-timeout = "0.1.0"
+serde = "1.0.197"
+serde_yaml = "0.9.33"
+structopt = "0.3.26"
+tokio = {version = "1.36.0",features = ["rt-multi-thread", "signal"]}
+log = "0.4.21"
