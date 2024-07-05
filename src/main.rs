@@ -7,22 +7,22 @@ use pingora::server::{configuration::Opt, Server};
 
 use pingora::services::Service;
 use serde::{Deserialize, Serialize};
-use tcp::proxy::proxy_service;
 use structopt::StructOpt;
+use tcp::proxy::proxy_service;
 
 mod tcp;
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct CustomConf {
-    pub upstream: String,
+    pub upstream: Vec<String>,
     pub listen: String,
 }
 
 impl Default for CustomConf {
     fn default() -> Self {
         CustomConf {
-            upstream: "".to_string(),
+            upstream: vec![],
             listen: "0.0.0.0:80".to_string(),
         }
     }
@@ -51,11 +51,14 @@ pub fn main() {
     println!("Server started");
     println!("custom CustomConf: {:?}", custom_conf);
     println!("official CustomConf: {:?}", proxy_server.configuration);
-    let proxy_service = proxy_service(
-        &custom_conf.listen.as_str(),   // listen
-        &custom_conf.upstream.as_str(), // proxy to
-    );
-    let services: Vec<Box<dyn Service>> = vec![Box::new(proxy_service)];
+    let mut services: Vec<Box<dyn Service>> = vec![];
+    for upstream in &custom_conf.upstream {
+        let proxy_service = proxy_service(
+            &custom_conf.listen.as_str(), // listen
+            &upstream.as_str(),           // proxy to
+        );
+        services.push(Box::new(proxy_service));
+    }
     proxy_server.add_services(services);
     proxy_server.run_forever();
 }
