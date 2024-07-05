@@ -25,6 +25,7 @@ use pingora::connectors::TransportConnector;
 use pingora::protocols::Stream;
 use pingora::server::ShutdownWatch;
 use pingora::upstreams::peer::BasicPeer;
+use std::net::ToSocketAddrs;
 
 pub struct ProxyApp {
     client_connector: TransportConnector,
@@ -37,7 +38,14 @@ enum DuplexEvent {
 }
 
 pub fn proxy_service(addr: &str, proxy_addr: &str) -> Service<ProxyApp> {
-    let proxy_to = BasicPeer::new(proxy_addr);
+    let proxy_to = match proxy_addr.to_socket_addrs() {
+        Ok(addrs) => {
+            BasicPeer::new(addrs.collect::<Vec<_>>().remove(0).to_string().as_str())
+        },
+        Err(_) => {
+            BasicPeer::new(proxy_addr)
+        },
+    };
 
     Service::with_listeners(
         "Proxy Service".to_string(),

@@ -1,5 +1,4 @@
 # tcp_proxy -c ./exmaple.yaml -d
 upstream:
-- 127.0.0.1:8080
-- 127.0.0.1:8081
+- www.baidu.com:443
 listen: 0.0.0.0:8083

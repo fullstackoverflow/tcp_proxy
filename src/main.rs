@@ -3,6 +3,7 @@ static GLOBAL: jemallocator::Jemalloc = jemallocator::Jemalloc;
 
 use std::fs;
 
+use pingora::lb::discovery;
 use pingora::server::{configuration::Opt, Server};
 
 use pingora::services::Service;
